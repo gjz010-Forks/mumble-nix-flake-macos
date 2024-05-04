@@ -87,7 +87,7 @@
             owner = "mumble-voip";
             repo = "mumble";
             rev = "1eecd5b49d2ebc50a636a85738a8a32afd452a3c";
-            sha256 = "";
+            sha256 = "sha256-ZzEUjOcOP9vaJ9Yo6J8G0eyxbtsrF1I162JTa9K0au8=";
             fetchSubmodules = true;
           };
         };
