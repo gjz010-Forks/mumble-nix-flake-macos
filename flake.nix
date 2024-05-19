@@ -2,7 +2,7 @@
   description = "Mumble voice chat software";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-23.11-darwin";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -25,8 +25,9 @@
               pkgs.python3
               pkgs.xar
             ] ++ (overrides.nativeBuildInputs or [ ]);
-            buildInputs = [ ] ++ (overrides.buildInputs or [ ]);
-            cmakeFlags = [ ] ++ (overrides.configureFlags or [ ]);
+            buildInputs = [
+            ] ++ (overrides.buildInputs or [ ]);
+            cmakeFlags = [  ] ++ (overrides.configureFlags or [ ]);
             preConfigure = ''
               patchShebangs scripts
             '';
@@ -45,16 +46,18 @@
             nativeBuildInputs = [ pkgs.qt5.qttools ];
             buildInputs = [
               pkgs.boost
-              pkgs.openssl
-              pkgs.poco
-              pkgs.flac
-              pkgs.libsndfile
+              pkgs.libopus
               pkgs.qt5.qtsvg
+              pkgs.rnnoise
+              pkgs.speex
+              pkgs.boost
               pkgs.libogg
               pkgs.libvorbis
               pkgs.flac
               pkgs.libsndfile
               pkgs.protobuf_21
+              pkgs.openssl
+              pkgs.poco
               pkgs.darwin.apple_sdk.frameworks.ScriptingBridge
             ];
             configureFlags = [
@@ -62,7 +65,8 @@
               "-D bundled-celt=ON"
               "-D bundled-opus=OFF"
               "-D bundled-speex=OFF"
-              "-D bundled-rnnoise=ON"
+              "-D bundled-rnnoise=OFF"
+              "-D bundled-renamenoise=ON"
               "-D bundle-qt-translations=OFF"
               "-D update=OFF"
               "-D overlay-xcompile=OFF"
@@ -81,13 +85,13 @@
             ];
           } source;
 
-        source = {
-          version = "1.5.629";
+        source = rec {
+          version = "1.5.634";
           src = pkgs.fetchFromGitHub {
             owner = "mumble-voip";
             repo = "mumble";
-            rev = "1eecd5b49d2ebc50a636a85738a8a32afd452a3c";
-            sha256 = "sha256-ZzEUjOcOP9vaJ9Yo6J8G0eyxbtsrF1I162JTa9K0au8=";
+            rev = "v${version}";
+            sha256 = "";
             fetchSubmodules = true;
           };
         };
