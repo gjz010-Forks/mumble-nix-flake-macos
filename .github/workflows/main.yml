@@ -1,0 +1,43 @@
+name: Build Mumble for macOS (ARM)
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    name: Build Mumble
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Install Nix with Determinate Nix Installer
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Run Nix Build
+        run: |
+          nix build .
+
+      - name: Find, Verify, and Copy Mumble.app
+        run: |
+          # 解析 result 的真实路径（在 macOS 中使用 pwd -P）
+          RESULT_PATH=$(cd result && pwd -P)
+          MUMBLE_APP_PATH="$RESULT_PATH/Mumble.app"
+
+          # 验证 Mumble.app 是否存在
+          if [ -d "$MUMBLE_APP_PATH" ]; then
+            echo "Found Mumble.app at $MUMBLE_APP_PATH"
+            cp -R "$MUMBLE_APP_PATH" Mumble.app
+          else
+            echo "Error: Unable to locate Mumble.app in $RESULT_PATH"
+            exit 1
+          fi
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: MumbleApp-${{ github.sha }}
+          path: Mumble.app
